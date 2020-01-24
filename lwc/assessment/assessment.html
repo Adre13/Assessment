@@ -1,0 +1,127 @@
+<!-- Assessment -->
+<template>
+    <lightning-layout multiple-rows="true" vertical-align="stretch" horizontal-align="spread">
+        <lightning-layout-item size="3" large-device-size="3" medium-device-size="3" small-device-size="12"
+                               padding="around-small">
+            <lightning-layout-item size="12">
+                <lightning-input data-id="testTaker" label={label.test_taker} onchange={findUser}
+                                 onfocus={handleInputFocused}
+                                 value={testTaker.name}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="3">
+                <lightning-input label={label.current_job_level}
+                                    value={actualJobLevel}
+                                    disabled>
+                </lightning-input>
+
+            </lightning-layout-item>
+            <lightning-layout-item size="3">
+                <lightning-combobox label={label.expected_job_level}
+                                    options={jobLevel}
+                                    name="job level"
+                                    value={expectedJobLevel}
+                                    onchange={handleJobLevelChange}>
+                </lightning-combobox>
+
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <lightning-input data-id="userHR" label={label.hr_label}  value={userHR.name} disabled></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <template for:each={examiners} for:item="examiner">
+                    <lightning-layout key={examiner.position} multiple-rows="false">
+                        <lightning-layout-item size="8">
+                            <lightning-input data-id={examiner.position} label={label.examiner}
+                                             onchange={findUser}
+                                             value={examiner.name}
+                                             onfocus={handleInputFocused}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" style="padding-left: 10px;">
+                            <lightning-combobox data-id={examiner.position}
+                                                label={label.attitude}
+                                                options={attitude}
+                                                name="attitude"
+                                                value={examiner.attitude}
+                                                onchange={handleComboboxChange}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" class="slds-text-align_center">
+                <lightning-button-group class="slds-p-vertical_small">
+                    <lightning-button variant="brand" label={label.remove_examiner} onclick={handleRemoveExaminer}
+                                      disabled={disableRemoveButton}></lightning-button>
+                    <lightning-button variant="brand" label={label.add_examiner}
+                                      onclick={handleAddExaminer}></lightning-button>
+                </lightning-button-group>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" class="slds-text-align_center">
+                <lightning-button variant="brand" label={label.create_assessment}
+                                  onclick={handleCheckError}></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout-item>
+        <template if:true={showLoadingSpinner}>
+            <lightning-spinner size="medium"></lightning-spinner>
+        </template>
+        <lightning-layout-item size=9 if:true={showUsersList}>
+            <div class="slds-scrollable_y" style="height: 15rem;">
+                <lightning-vertical-navigation onselect={bindSelectedUser} compact>
+                    <lightning-button label={label.close} onclick={closeUsersList}>
+                    </lightning-button>
+                    <template for:each={searchUsersList} for:item="listItem">
+                        <lightning-vertical-navigation-item key={listItem.key} label={listItem.value}
+                                                            name={listItem.key}></lightning-vertical-navigation-item>
+                    </template>
+                </lightning-vertical-navigation>
+            </div>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="9" large-device-size="9" medium-device-size="9" small-device-size="12"
+                               padding="around-small">
+
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-layout multiple-rows="false">
+                    <lightning-layout-item size="2">
+                        <lightning-input label={label.salary_is_changing} type="checkbox" value={showSalary}
+                                         onchange={handleShowSalary}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item if:true={showSalary} size="2" style="padding-right: 10px;">
+                        <lightning-input type="number" label={label.actual_salary}
+                                         value={actualSalary} onchange={handleActualSalary}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item if:true={showSalary} size="2" style="padding-left: 10px;">
+                        <lightning-input type="number" label={label.expected_salary}
+                                         value={expectedSalary}
+                                         onchange={handleExpectedSalary}></lightning-input>
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            </lightning-layout-item>
+
+
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-input label={label.assessment_date} type="datetime" required
+                                 onchange={handleAssessmentDate}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <lightning-input type="file" accept=".pdf" onchange={attachReview}
+                                 label={label.attachment}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout multiple-rows="false" if:true={attachedFile}>
+                <lightning-layout-item size="4">
+                    <lightning-input label={label.file_name} type="text" value={attachedFileName}
+                                     disabled></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="1">
+                    <div class="slds-p-horizontal__small" style="margin-top: 24px">
+                        <lightning-button-icon icon-name="utility:close"
+                                               alternative-text={label.delete_selected}
+                                               variant="border-filled"
+                                               onclick={deleteAttachedFile}></lightning-button-icon>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

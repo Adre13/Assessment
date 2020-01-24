@@ -1,0 +1,7 @@
+<aura:component description="newAssessment"
+                implements="lightning:actionOverride"
+                access="global">
+    <lightning:card >
+        <c:assessment onstartredirect="{!c.handleRedirect}"/>
+    </lightning:card>
+</aura:component>
